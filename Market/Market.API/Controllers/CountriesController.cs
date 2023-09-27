@@ -6,47 +6,49 @@ using Microsoft.EntityFrameworkCore;
 namespace Market.API.Controllers
 {
 
+
     [ApiController]
     [Route("/api/countries")]
     public class CountriesController:ControllerBase
     {
 
-
-        private readonly DataContext _Context;
+        private readonly DataContext _context;
 
         public CountriesController(DataContext context)
         {
-            _Context = context;
+            _context = context;
         }
 
 
-        //lista de paises
-
+        // Lista de paises
+        [HttpGet]
         public async Task<ActionResult> Get()
         {
 
 
-            return Ok(await _Context.Countries.ToListAsync());
+            return Ok(await _context.Countries.ToListAsync());
 
         }
 
-        //get por parametro -- id
+
+        //Get por parámetro--- id
+
         [HttpGet("{id:int}")]
+        public async Task<ActionResult> Get(int id)
+        {
 
-        public async Task<ActionResult> Get(int id) {
 
-            var country = await _Context.Countries.FirstOrDefaultAsync
-                (c => c.Id == id);
+            var country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == id);
 
             if (country == null)
             {
-                return NotFound();
+                return NotFound();//404
+
+
             }
 
-            return Ok(country);
+            return Ok(country);//200
 
-        
-        
         }
 
         // Insertar registros
@@ -54,26 +56,26 @@ namespace Market.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Country country)
         {
-            _Context.Add(country);
-            await _Context.SaveChangesAsync();
+            _context.Add(country);
+            await _context.SaveChangesAsync();
             return Ok(country);//200
         }
+
 
 
         [HttpPut]
         public async Task<ActionResult> Put(Country country)
         {
-            _Context.Update(country);
-            await _Context.SaveChangesAsync();
+            _context.Update(country);
+            await _context.SaveChangesAsync();
             return Ok(country);//200
         }
-
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
 
-            var filaafectada = await _Context.Countries
+            var filaafectada = await _context.Countries
                 .Where(c => c.Id == id)
                 .ExecuteDeleteAsync();
 
@@ -88,7 +90,5 @@ namespace Market.API.Controllers
             return NoContent();//204   
 
         }
-
-
     }
 }
